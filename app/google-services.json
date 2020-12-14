@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "63112649678",
+    "project_id": "weebchat-8cd0d",
+    "storage_bucket": "weebchat-8cd0d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:63112649678:android:d3f9e44a5224aff699299f",
+        "android_client_info": {
+          "package_name": "com.se122l11pmcl.weebchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "63112649678-tnivg1k5ta4q4f7qivq3qlodko765qn6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.se122l11pmcl.weebchat",
+            "certificate_hash": "ab0b88e2e0428e51eab3d76f1875173f3828083b"
+          }
+        },
+        {
+          "client_id": "63112649678-tbo9hk8h4a0ii5drplq8ndjujed5q33n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNgmn8z7jS9bwqW-GIAf1lPBxOPmkb_J4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "63112649678-tbo9hk8h4a0ii5drplq8ndjujed5q33n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
