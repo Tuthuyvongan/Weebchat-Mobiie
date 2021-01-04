@@ -6,12 +6,14 @@ public class Chat {
     private String receiver;
     private String message;
     private boolean isView;
+    private String type;
 
-    public Chat(String sender, String receiver, String message, boolean isView) {
+    public Chat(String sender, String receiver, String message, boolean isView, String type) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
         this.isView = isView;
+        this.type = type;
     }
 
     public Chat() {
@@ -47,5 +49,13 @@ public class Chat {
 
     public void setView(boolean view) {
         isView = view;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

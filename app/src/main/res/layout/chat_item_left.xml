@@ -21,6 +21,15 @@
         android:textSize="18sp"
         android:background="@drawable/background_left"/>
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/image_send"
+        android:layout_toRightOf="@+id/profile_image"
+        android:background="#000"
+        android:padding="8dp"
+        android:visibility="gone"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
