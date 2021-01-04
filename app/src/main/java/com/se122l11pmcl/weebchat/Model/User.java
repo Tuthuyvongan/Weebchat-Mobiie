@@ -5,16 +5,18 @@ public class User {
     private String id;
     private String username;
     private String imageURL;
+    private boolean isOnline;
     private String status;
     private String search;
 
 
-    public User(String id, String username, String imageURL, String status, String search) {
+    public User(String id, String username, String imageURL, String status, String search, boolean isOnline) {
         this.id = id;
         this.username = username;
         this.imageURL = imageURL;
         this.status = status;
         this.search = search;
+        this.isOnline = isOnline;
     }
 
     public User() {
@@ -58,5 +60,13 @@ public class User {
 
     public void setSearch(String search) {
         this.search = search;
+    }
+
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public void setOnline(boolean online) {
+        isOnline = online;
     }
 }

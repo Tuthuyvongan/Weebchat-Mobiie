@@ -147,16 +147,25 @@ public class MainActivity extends AppCompatActivity {
 
         reference.updateChildren(hashMap);
     }
+    private void isOnline(boolean isOnline){
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("isOnline", isOnline);
+        reference.updateChildren(hashMap);
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
         status("online");
+        isOnline(true);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         status("offline");
+        isOnline(false);
     }
 }

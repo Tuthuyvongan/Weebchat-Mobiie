@@ -50,6 +50,8 @@ public class MessageActivity extends AppCompatActivity {
 
     Intent intent;
 
+    ValueEventListener seenListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,15 +118,42 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         });
+        seenMessage(userid);
     }
 
-    private void sendMessage ( String sender, String receiver, String message){
+
+    private void seenMessage(final String userid){
+        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        seenListener = reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    Chat chat = snapshot.getValue(Chat.class);
+                    if (chat.getReceiver().equals(fuser.getUid()) && chat.getSender().equals(userid))
+                    {
+                        HashMap <String, Object> hashMap = new HashMap<>();
+                        hashMap.put("isView", true);
+                        snapshot.getRef().updateChildren(hashMap);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void sendMessage (String sender, final String receiver, String message){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender", sender);
         hashMap.put("receiver", receiver);
         hashMap.put("message", message);
+        hashMap.put("isView", false);
 
         reference.child("Chats").push().setValue(hashMap);
     }
@@ -159,7 +188,13 @@ public class MessageActivity extends AppCompatActivity {
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("status", status);
+        reference.updateChildren(hashMap);
+    }
+    private void isOnline(boolean isOnline){
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
 
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("isOnline", isOnline);
         reference.updateChildren(hashMap);
     }
 
@@ -167,11 +202,14 @@ public class MessageActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         status("online");
+        isOnline(true);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         status("offline");
+        isOnline(false);
+        reference.removeEventListener(seenListener);
     }
 }
