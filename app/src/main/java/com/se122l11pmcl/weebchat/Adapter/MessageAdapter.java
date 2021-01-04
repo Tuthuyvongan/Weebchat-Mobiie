@@ -20,6 +20,7 @@ import com.se122l11pmcl.weebchat.Model.Chat;
 import com.se122l11pmcl.weebchat.Model.User;
 import com.se122l11pmcl.weebchat.R;
 import com.squareup.picasso.Picasso;
+import com.theophrast.ui.widget.SquareImageView;
 
 import java.util.List;
 
@@ -57,11 +58,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         Chat chat = mChat.get(position);
         if (chat.getType().equals("text")) {
             holder.show_message.setText(chat.getMessage());
+            holder.show_message.setVisibility(View.VISIBLE);
+            holder.txt_seen.setVisibility(View.VISIBLE);
+            holder.txt_seen_img.setVisibility(View.GONE);
+            holder.image_send.setVisibility(View.GONE);
         }else{
             if(chat.getType().equals("image")){
                 holder.show_message.setVisibility(View.GONE);
                 holder.image_send.setVisibility(View.VISIBLE);
                 holder.txt_seen.setVisibility(View.GONE);
+                holder.txt_seen_img.setVisibility(View.VISIBLE);
                 Picasso.get().load(chat.getMessage()).into(holder.image_send);
             }
         }
@@ -73,9 +79,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
 
         if (position == mChat.size()-1){
-            if (chat.isIsView()) holder.txt_seen.setText("Seen");
-            else holder.txt_seen.setText("Delivered");
-        } else holder.txt_seen.setVisibility(View.GONE);
+            if (chat.isIsView()) {
+                holder.txt_seen.setText("Seen");
+                holder.txt_seen_img.setText("Seen");
+            }
+            else {
+                holder.txt_seen.setText("Delivered");
+                holder.txt_seen_img.setText("Delivered");
+            }
+        } else {
+            holder.txt_seen.setVisibility(View.GONE);
+            holder.txt_seen_img.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -86,7 +101,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder{
         public TextView show_message;
         public ImageView profile_image;
-        public ImageView image_send;
+        public SquareImageView image_send;
+        public TextView txt_seen_img;
+
 
         public TextView txt_seen;
 
@@ -97,6 +114,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             profile_image = itemView.findViewById(R.id.profile_image);
             image_send = itemView.findViewById(R.id.image_send);
             txt_seen = itemView.findViewById(R.id.txt_seen);
+            txt_seen_img = itemView.findViewById(R.id.txt_seen_img);
         }
     }
 
