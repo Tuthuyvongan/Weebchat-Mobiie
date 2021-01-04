@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="8dp"
     android:layout_height="wrap_content">
 
@@ -20,6 +21,16 @@
         android:padding="8dp"
         android:textSize="18sp"
         android:background="@drawable/background_left"/>
+
+    <com.theophrast.ui.widget.SquareImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:id="@+id/image_send"
+        android:scaleType="centerCrop"
+        android:layout_toRightOf="@id/profile_image"
+        android:padding="8dp"
+        android:visibility="gone"
+        app:hwRatio="1" />
 
     <TextView
         android:layout_width="wrap_content"
