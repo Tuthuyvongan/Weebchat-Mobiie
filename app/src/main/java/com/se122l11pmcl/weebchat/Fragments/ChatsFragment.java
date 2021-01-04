@@ -58,17 +58,17 @@ public class ChatsFragment extends Fragment {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                usersList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Chat chat = snapshot.getValue(Chat.class);
-                    if (chat.getSender().equals(fuser.getUid())){
-                        usersList.add(chat.getReceiver());
+                    usersList.clear();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                        Chat chat = snapshot.getValue(Chat.class);
+                        if (chat.getSender().equals(fuser.getUid())){
+                            usersList.add(chat.getReceiver());
+                        }
+                        if (chat.getReceiver().equals(fuser.getUid())){
+                            usersList.add(chat.getSender());
+                        }
                     }
-                    if (chat.getReceiver().equals(fuser.getUid())){
-                        usersList.add(chat.getSender());
-                    }
-                }
-                readChats();
+                    readChats();
             }
 
             @Override
@@ -88,28 +88,28 @@ public class ChatsFragment extends Fragment {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mUsers.clear();
-                for ( DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    User user = snapshot.getValue(User.class);
+                    mUsers.clear();
+                    for ( DataSnapshot snapshot : dataSnapshot.getChildren()){
+                        User user = snapshot.getValue(User.class);
 
-                    // The hien 1 user tu chats
-                    for (String id : usersList){
-                        if (user.getId().equals(id)){
-                            if (mUsers.size() != 0){
-                                for (User user1 : mUsers){
-                                    if (!user.getId().equals(user1.getId())){
-                                        mUsers.add(user);
+                        // The hien 1 user tu chats
+                        for (String id : usersList){
+                            if (user.getId().equals(id)){
+                                if (mUsers.size() != 0){
+                                    for (User user1 : mUsers){
+                                        if (!user.getId().equals(user1.getId())){
+                                            mUsers.add(user);
+                                        }
                                     }
+                                } else {
+                                    mUsers.add(user);
                                 }
-                            } else {
-                                mUsers.add(user);
                             }
                         }
                     }
+                    userAdapter = new UserAdapter(getContext(), mUsers, true);
+                    recyclerView.setAdapter(userAdapter);
                 }
-                userAdapter = new UserAdapter(getContext(), mUsers, true);
-                recyclerView.setAdapter(userAdapter);
-            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

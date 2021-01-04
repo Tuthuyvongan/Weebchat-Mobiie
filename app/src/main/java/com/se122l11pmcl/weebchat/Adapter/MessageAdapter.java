@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -57,17 +58,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
         Chat chat = mChat.get(position);
         if (chat.getType().equals("text")) {
-            holder.show_message.setText(chat.getMessage());
-            holder.show_message.setVisibility(View.VISIBLE);
-            holder.txt_seen.setVisibility(View.VISIBLE);
-            holder.txt_seen_img.setVisibility(View.GONE);
-            holder.image_send.setVisibility(View.GONE);
+                holder.show_message.setText(chat.getMessage());
         }else{
             if(chat.getType().equals("image")){
                 holder.show_message.setVisibility(View.GONE);
                 holder.image_send.setVisibility(View.VISIBLE);
-                holder.txt_seen.setVisibility(View.GONE);
-                holder.txt_seen_img.setVisibility(View.VISIBLE);
                 Picasso.get().load(chat.getMessage()).into(holder.image_send);
             }
         }
@@ -81,15 +76,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         if (position == mChat.size()-1){
             if (chat.isIsView()) {
                 holder.txt_seen.setText("Seen");
-                holder.txt_seen_img.setText("Seen");
             }
             else {
                 holder.txt_seen.setText("Delivered");
-                holder.txt_seen_img.setText("Delivered");
             }
         } else {
             holder.txt_seen.setVisibility(View.GONE);
-            holder.txt_seen_img.setVisibility(View.GONE);
         }
     }
 
@@ -102,9 +94,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         public TextView show_message;
         public ImageView profile_image;
         public SquareImageView image_send;
-        public TextView txt_seen_img;
-
-
         public TextView txt_seen;
 
         public ViewHolder(@NonNull View itemView) {
@@ -114,7 +103,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             profile_image = itemView.findViewById(R.id.profile_image);
             image_send = itemView.findViewById(R.id.image_send);
             txt_seen = itemView.findViewById(R.id.txt_seen);
-            txt_seen_img = itemView.findViewById(R.id.txt_seen_img);
         }
     }
 
