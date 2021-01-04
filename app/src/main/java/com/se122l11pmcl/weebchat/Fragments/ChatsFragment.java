@@ -20,9 +20,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.se122l11pmcl.weebchat.Adapter.UserAdapter;
 import com.se122l11pmcl.weebchat.Model.Chat;
 import com.se122l11pmcl.weebchat.Model.User;
+import com.se122l11pmcl.weebchat.Notifications.Token;
 import com.se122l11pmcl.weebchat.R;
 
 import java.util.ArrayList;
@@ -77,7 +79,16 @@ public class ChatsFragment extends Fragment {
             }
         });
 
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+
         return view;
+    }
+
+
+    private void updateToken(String token){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
+        Token token1 = new Token(token);
+        reference.child(fuser.getUid()).setValue(token1);
     }
 
     private void readChats() {
