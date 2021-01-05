@@ -31,9 +31,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
@@ -149,9 +152,19 @@ public class MessageActivity extends AppCompatActivity {
                         }
                         if ( which == 1){
                             checker = "pdf";
+
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            intent.setType("application/pdf");
+                            startActivityForResult(intent.createChooser(intent, "Select PDF File"), 438);
                         }
                         if ( which == 2){
                             checker = "docx";
+
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            intent.setType("application/msword");
+                            startActivityForResult(intent.createChooser(intent, "Select MS Word File"), 438);
                         }
                     }
                 });
@@ -194,12 +207,15 @@ public class MessageActivity extends AppCompatActivity {
 
         if (requestCode == 438 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             final ProgressDialog pd = new ProgressDialog(this);
-            pd.setMessage("Sending...");
+            pd.setMessage("Please wait, we are sending that file...");
+            pd.setTitle("Sending File");
             pd.setCanceledOnTouchOutside(false);
             pd.show();
             imgFileUri = data.getData();
             if (checker.equals("image")) {
+
                 if (imgFileUri != null) {
+
                     final StorageReference fileReference = storageReference.child(System.currentTimeMillis()
                             + "." + getFileExtension(imgFileUri));
 
@@ -218,7 +234,6 @@ public class MessageActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 Uri downloadUri = task.getResult();
                                 myUrl = downloadUri.toString();
-                                //String msgId = FirebaseDatabase.getInstance().getReference("Chats").getKey();
                                 final String userid = intent.getStringExtra("userid");
                                 fuser = FirebaseAuth.getInstance().getCurrentUser();
                                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
@@ -245,6 +260,55 @@ public class MessageActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(MessageActivity.this, "Nothing selected!", Toast.LENGTH_SHORT).show();
                     pd.dismiss();
+                }
+            }else {
+                if (!checker.equals("image")){
+                    if (imgFileUri != null) {
+                        final StorageReference fileReference = storageReference.child(System.currentTimeMillis()
+                                + "." + getFileExtension(imgFileUri));
+
+                        fileUploadTask = fileReference.putFile(imgFileUri);
+                        fileUploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                            @Override
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if (!task.isSuccessful()) {
+                                    throw task.getException();
+                                }
+                                return fileReference.getDownloadUrl();
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()) {
+                                    Uri downloadUri = task.getResult();
+                                    myUrl = downloadUri.toString();
+                                    final String userid = intent.getStringExtra("userid");
+                                    fuser = FirebaseAuth.getInstance().getCurrentUser();
+                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
+                                    HashMap<String, Object> map = new HashMap<>();
+                                    map.put("sender", fuser.getUid());
+                                    map.put("receiver", userid);
+                                    map.put("message", myUrl);
+                                    map.put("isView", false);
+                                    map.put("type", checker);
+                                    reference.push().setValue(map);
+                                    pd.dismiss();
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                pd.dismiss();
+                                Toast.makeText(MessageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+//                        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+//                            @Override
+//                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+//                                double p = (100.0*taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+//                                pd.setMessage((int) p + " % Uploading...");
+//                            }
+                        });
+                    }
                 }
             }
         }

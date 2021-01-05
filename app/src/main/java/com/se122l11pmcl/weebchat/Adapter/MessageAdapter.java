@@ -2,6 +2,7 @@ package com.se122l11pmcl.weebchat.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,8 +56,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
-        Chat chat = mChat.get(position);
+    public void onBindViewHolder(@NonNull final MessageAdapter.ViewHolder holder, final int position) {
+        final Chat chat = mChat.get(position);
         if (chat.getType().equals("text")) {
                 holder.show_message.setText(chat.getMessage());
         }else{
@@ -64,6 +65,32 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 holder.show_message.setVisibility(View.GONE);
                 holder.image_send.setVisibility(View.VISIBLE);
                 Picasso.get().load(chat.getMessage()).into(holder.image_send);
+            }else {
+                if(chat.getType().equals("pdf")) {
+                    holder.image_send.setVisibility(View.VISIBLE);
+                    holder.image_send.setBackgroundResource(R.mipmap.ic_file);
+                    holder.show_message.setVisibility(View.GONE);
+                    holder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(chat.getMessage()));
+                            holder.itemView.getContext().startActivity(intent);
+                        }
+                    });
+                }else {
+                    if (chat.getType().equals("docx")){
+                        holder.image_send.setVisibility(View.VISIBLE);
+                        holder.image_send.setBackgroundResource(R.mipmap.ic_word);
+                        holder.show_message.setVisibility(View.GONE);
+                        holder.itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(chat.getMessage()));
+                                holder.itemView.getContext().startActivity(intent);
+                            }
+                        });
+                    }
+                }
             }
         }
 
